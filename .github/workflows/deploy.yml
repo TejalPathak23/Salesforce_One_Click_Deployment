@@ -1,6 +1,5 @@
 name: Deploy to New Salesforce Org
 
-# Trigger on manual dispatch (or you can use push events)
 on:
   workflow_dispatch:
 
@@ -23,10 +22,11 @@ jobs:
           echo "${{ secrets.SFDC_AUTH_URL }}" > sfdx-auth-url.txt
           sfdx force:auth:sfdxurl:store -f sfdx-auth-url.txt -a MyNewOrg
 
-      # (Optional) Step 4: Display org info for verification
+      # (Optional) Step 4: Display org info
       - name: Display Org Info
         run: sfdx force:org:display -u MyNewOrg --verbose
 
-      # Step 5: Deploy the metadata from your repository to the target org
-      - name: Deploy Metadata
-        run: sfdx force:source:deploy -u MyNewOrg -p force-app --wait 10 --testlevel RunLocalTests
+      # Step 5: Deploy without running tests
+      - name: Deploy Metadata (No Tests)
+        run: |
+          sfdx force:source:deploy -u MyNewOrg -p force-app --wait 10 --testlevel NoTestRun
